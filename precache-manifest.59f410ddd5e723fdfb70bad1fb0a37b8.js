@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "49dce5c0a8d2b93529203c7ea1bbfa8b",
+    "revision": "3677a3922e84d177a6bbadedbfaf6924",
     "url": "/join-icpc-jag/index.html"
   },
   {
@@ -8,8 +8,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/join-icpc-jag/static/js/2.63175a57.chunk.js"
   },
   {
-    "revision": "388e4bb7fc68c820f5d8",
-    "url": "/join-icpc-jag/static/js/main.b3250228.chunk.js"
+    "revision": "60fd5d69c35ff4866c9b",
+    "url": "/join-icpc-jag/static/js/main.6aa01d6b.chunk.js"
   },
   {
     "revision": "69fc77c654c807633b72",
