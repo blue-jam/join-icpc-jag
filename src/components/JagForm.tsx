@@ -173,6 +173,7 @@ const JagForm: React.FunctionComponent = () => {
         <button onClick={handleButtonClick}>加入メールを生成</button>
       </form>
       <hr />
+      <h2>生成結果</h2>
       <div>
         <div>
           <textarea
