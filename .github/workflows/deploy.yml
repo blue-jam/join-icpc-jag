@@ -1,0 +1,27 @@
+name: Deploy the tool to Github pages
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: npm install, build, and test
+        run: |
+          npm install
+          npm run build --if-present
+          npm test
+        env:
+          CI: true
+      - name: Deploy github pages
+        uses: peaceiris/actions-gh-pages@v2.2.0
+        env:
+          ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: ./build
