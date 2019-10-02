@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import TextInput from './Form/TextInput';
 
 const JagForm: React.FunctionComponent = () => {
   const [name, setName] = useState('');
@@ -70,59 +71,37 @@ const JagForm: React.FunctionComponent = () => {
       <form>
         <div>
           <label htmlFor="name">氏名（本名）</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={e => setName(e.target.value)}
-          />
+          <TextInput id="name" value={name} setValue={setName} />
         </div>
         <div>
           <label htmlFor="organization">所属</label>
-          <input
-            type="text"
+          <TextInput
             id="organization"
-            placeholder="学校名または企業名"
             value={organization}
-            onChange={e => setOrganization(e.target.value)}
+            setValue={setOrganization}
+            placeholder="学校名または企業名"
           />
         </div>
         <div>
           <label htmlFor="handle">ハンドルネーム</label>
-          <input
-            type="text"
-            id="handle"
-            value={handleName}
-            onChange={e => setHandleName(e.target.value)}
-          />
+          <TextInput id="handle" value={handleName} setValue={setHandleName} />
         </div>
         <div>
           <div>
             <label htmlFor="icpc-year">ICPCに参加した年</label>
-            <input
-              type="text"
-              id="icpc-year"
-              value={icpcYear}
-              onChange={e => setIcpcYear(e.target.value)}
-            />
+            <TextInput id="icpc-year" value={icpcYear} setValue={setIcpcYear} />
           </div>
           <div>
             <label htmlFor="icpc-school">ICPC参加時の所属</label>
-            <input
-              type="text"
+            <TextInput
               id="icpc-school"
               value={icpcSchool}
-              onChange={e => setIcpcSchool(e.target.value)}
+              setValue={setIcpcSchool}
             />
           </div>
           <div>
             <label htmlFor="icpc-team">チーム名</label>
-            <input
-              type="text"
-              id="icpc-team"
-              value={icpcTeam}
-              onChange={e => setIcpcTeam(e.target.value)}
-            />
+            <TextInput id="icpc-team" value={icpcTeam} setValue={setIcpcTeam} />
           </div>
         </div>
         <fieldset>
