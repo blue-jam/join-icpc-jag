@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/join-icpc-jag/precache-manifest.59f410ddd5e723fdfb70bad1fb0a37b8.js"
+  "/join-icpc-jag/precache-manifest.696fc7aa77582765e637833c767fa9b1.js"
 );
 
 self.addEventListener('message', (event) => {
