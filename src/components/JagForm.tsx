@@ -1,5 +1,75 @@
-import React, { useState } from 'react';
+import React, { MouseEvent, useState } from 'react';
 import TextInput from './Form/TextInput';
+
+interface WishList {
+  problem: boolean;
+  staff: boolean;
+  affair: boolean;
+}
+
+interface EmailGenerateResult {
+  error?: string;
+  emailSubject: string;
+  emailBody: string;
+}
+
+const generateEmailBody = (
+  organization: string,
+  name: string,
+  handleName: string,
+  icpcYear: string,
+  icpcSchool: string,
+  icpcTeam: string,
+  wishList: WishList
+): EmailGenerateResult => {
+  if (!name) {
+    return { error: '氏名は必須です', emailBody: '', emailSubject: '' };
+  }
+
+  if (!organization) {
+    return { error: '所属は必須です', emailBody: '', emailSubject: '' };
+  }
+
+  const emailTitle = `ICPC OB OGの会入会希望　（${name}）`;
+
+  let emailBody = 'こんにちは\n\n';
+  emailBody += `${organization}の${name}です。ICPC OBOGの会への入会を希望します。\n`;
+  emailBody += `必要情報は下記のとおりです。\n\n`;
+  emailBody += `氏名: ${name}\n`;
+  if (handleName) {
+    emailBody += `ハンドルネーム: ${handleName}\n`;
+  }
+  if (icpcYear || icpcSchool || icpcTeam) {
+    emailBody += `ICPC経験: `;
+    if (icpcYear) {
+      emailBody += icpcYear && `${icpcYear}年に`;
+      emailBody += icpcSchool && `${icpcSchool}の`;
+      emailBody += icpcTeam && `${icpcTeam}という`;
+      if (icpcSchool || icpcTeam) {
+        emailBody += 'チームで';
+      }
+      emailBody += '参加しました。\n';
+    }
+  }
+  emailBody += `JAGで担当したいこと:\n`;
+  if (wishList.problem) {
+    emailBody += ` - 問題作成\n`;
+  }
+  if (wishList.staff) {
+    emailBody += ` - 合宿・大会の現地スタッフ\n`;
+  }
+  if (wishList.affair) {
+    emailBody += ` - 事務仕事\n`;
+  }
+  if (Object.values(wishList).every(flag => !flag)) {
+    emailBody += ` - メーリングリストの受信のみ\n`;
+  }
+
+  emailBody += `\n以上です。よろしくお願いします。\n\n`;
+  emailBody += `${name}`;
+
+  return { emailBody, emailSubject: emailTitle };
+};
 
 const JagForm: React.FunctionComponent = () => {
   const [name, setName] = useState('');
@@ -13,62 +83,72 @@ const JagForm: React.FunctionComponent = () => {
     staff: false,
     affair: false
   });
+  const [receiverEmail, setReceiverEmail] = useState('');
   const [emailBody, setEmailBody] = useState('');
 
-  const handleButtonClick = (e: any) => {
+  const handleGenerateButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (!name) {
-      window.alert('氏名は必須です');
+    const { error, emailBody } = generateEmailBody(
+      organization,
+      name,
+      handleName,
+      icpcYear,
+      icpcSchool,
+      icpcTeam,
+      wishList
+    );
+
+    if (error) {
+      window.alert(error);
       return;
     }
-    if (!organization) {
-      window.alert('所属は必須です');
+
+    setEmailBody(emailBody);
+  };
+
+  const handleSubmitButtonClick = (e: MouseEvent) => {
+    e.preventDefault();
+
+    const { error, emailBody, emailSubject } = generateEmailBody(
+      organization,
+      name,
+      handleName,
+      icpcYear,
+      icpcSchool,
+      icpcTeam,
+      wishList
+    );
+
+    if (error) {
+      window.alert(error);
       return;
     }
 
-    let newEmailBody = 'こんにちは\n\n';
-    newEmailBody += `${organization}の${name}です。ICPC OBOGの会への入会を希望します。\n`;
-    newEmailBody += `必要情報は下記のとおりです。\n\n`;
-    newEmailBody += `氏名: ${name}\n`;
-    if (handleName) {
-      newEmailBody += `ハンドルネーム: ${handleName}\n`;
-    }
-    if (icpcYear || icpcSchool || icpcTeam) {
-      newEmailBody += `ICPC経験: `;
-      if (icpcYear) {
-        newEmailBody += icpcYear && `${icpcYear}年に`;
-        newEmailBody += icpcSchool && `${icpcSchool}の`;
-        newEmailBody += icpcTeam && `${icpcTeam}という`;
-        if (icpcSchool || icpcTeam) {
-          newEmailBody += 'チームで';
-        }
-        newEmailBody += '参加しました。\n';
-      }
-    }
-    newEmailBody += `JAGで担当したいこと:\n`;
-    if (wishList.problem) {
-      newEmailBody += ` - 問題作成\n`;
-    }
-    if (wishList.staff) {
-      newEmailBody += ` - 合宿・大会の現地スタッフ\n`;
-    }
-    if (wishList.affair) {
-      newEmailBody += ` - 事務仕事\n`;
-    }
-    if (Object.values(wishList).every(flag => !flag)) {
-      newEmailBody += ` - メーリングリストの受信のみ\n`;
-    }
+    setEmailBody(emailBody);
 
-    newEmailBody += `\n以上です。よろしくお願いします。\n\n`;
-    newEmailBody += `${name}`;
-
-    setEmailBody(newEmailBody);
+    window.location.href = `mailto:${receiverEmail}?subject=${encodeURI(
+      emailSubject
+    )}&body=${encodeURI(emailBody)}`;
   };
 
   return (
     <div>
       <form>
+        <div>
+          <img
+            src="https://jag-icpc.org/?plugin=attach&refer=FrontPage&openfile=question.png"
+            alt=""
+          />
+        </div>
+        <div>
+          <label htmlFor="receiver-email">送信先メールアドレス</label>
+          <TextInput
+            id="receiver-email"
+            value={receiverEmail}
+            setValue={setReceiverEmail}
+          />
+        </div>
         <div>
           <label htmlFor="name">氏名（本名）</label>
           <TextInput id="name" value={name} setValue={setName} />
@@ -149,7 +229,12 @@ const JagForm: React.FunctionComponent = () => {
             事務
           </label>
         </fieldset>
-        <button onClick={handleButtonClick}>加入メールを生成</button>
+        <button onClick={handleGenerateButtonClick}>加入メールを生成</button>
+        <button onClick={handleSubmitButtonClick}>メーラーを起動する</button>
+        <div>
+          OSとブラウザ、メーラーの組み合わせによって、起動したときに文字化けをすることがあります。
+          文字化けが起こる場合は、生成結果をコピーしてメーラーに貼り付けてください。
+        </div>
       </form>
       <hr />
       <h2>生成結果</h2>
